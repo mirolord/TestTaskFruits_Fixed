@@ -1,32 +1,31 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Player : MonoBehaviour
 {
-	[SerializeField] private float _speed = 3f;
 	[SerializeField] private Joystick _joystick;
+	[SerializeField] private float _speed = 1f;
 
-	private Rigidbody _rb;
-	private float _dirH, _dirV;
+	private Rigidbody _rigidbody;
 
 	private void Awake()
 	{
-		_rb = GetComponent<Rigidbody>();
+		_rigidbody = GetComponent<Rigidbody>();
 
 		if (_joystick == null)
 		{
-			Debug.LogError("Компонент Joystick не назначен.");
+			Debug.LogError("РљРѕРјРїРѕРЅРµРЅС‚ Joystick РЅРµ РЅР°Р·РЅР°С‡РµРЅ.");
 		}
-	}
-
-	void Update()
-	{
-		_dirH = _joystick.Horizontal;
-		_dirV = _joystick.Vertical;
 	}
 
 	private void FixedUpdate()
 	{
-		Vector3 yVelocity = new Vector3(0, _rb.velocity.y, 0);
-		_rb.velocity = transform.forward * _dirV + transform.right * _dirH + yVelocity;
+		Move();
+	}
+
+	private void Move()
+	{
+		Vector3 direction = new Vector3(_joystick.Horizontal, _rigidbody.velocity.y, _joystick.Vertical);
+		_rigidbody.velocity = transform.TransformDirection(direction) * _speed;
 	}
 }
